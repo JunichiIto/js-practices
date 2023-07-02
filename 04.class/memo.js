@@ -6,12 +6,13 @@ import sqlite3 from "sqlite3";
 class App {
   constructor() {
     this.storage = new MemoStorage();
-    this.storage.createTable();
   }
 
   run() {
     const argv = minimist(process.argv.slice(2));
-    if (argv.l) {
+    if (argv.init) {
+      this.storage.createTable();
+    } else if (argv.l) {
       this.#doList();
     } else if (argv.r) {
       this.#doRead();
