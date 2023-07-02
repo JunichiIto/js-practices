@@ -5,15 +5,15 @@ const y = argv["y"];
 const m = argv["m"];
 
 const date = new Date(y, m - 1, 1);
-const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 
 console.log(`      ${date.getMonth() + 1}月 ${date.getFullYear()}`);
 console.log("日 月 火 水 木 金 土");
-process.stdout.write(" ".repeat(startOfMonth.getDay() * 3));
+
+const endOfMonth = new Date(y, m, 0);
+process.stdout.write(" ".repeat(date.getDay() * 3));
 for (let i = 1; i <= endOfMonth.getDate(); i++) {
-  const day = new Date(startOfMonth.getFullYear(), startOfMonth.getMonth(), i);
-  process.stdout.write(`${day.getDate().toString().padStart(2)} `);
+  process.stdout.write(`${i.toString().padStart(2)} `);
+  const day = new Date(y, m - 1, i);
   if (day.getDay() === 6) {
     process.stdout.write("\n");
   }
