@@ -1,7 +1,7 @@
-import enquirer from 'enquirer';
+import enquirer from "enquirer";
 import minimist from "minimist";
-import { promises as fs } from 'fs';
-import sqlite3 from 'sqlite3';
+import { promises as fs } from "fs";
+import sqlite3 from "sqlite3";
 
 class App {
   constructor() {
@@ -26,13 +26,13 @@ class App {
   // https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Classes/Private_class_fields
   async #doList() {
     const memos = await this.storage.all();
-    memos.forEach(memo => console.log(memo.title))
+    memos.forEach((memo) => console.log(memo.title));
   }
 
   async #doRead() {
     const prompt = new enquirer.Select({
       message: "Choose a note you want to see:",
-      choices: this.#buildChoices()
+      choices: this.#buildChoices(),
     });
     const id = await prompt.run();
     const memo = await this.storage.find(id);
@@ -42,7 +42,7 @@ class App {
   async #doDelete() {
     const prompt = new enquirer.Select({
       message: "Choose a note you want to delete:",
-      choices: this.#buildChoices()
+      choices: this.#buildChoices(),
     });
     const id = await prompt.run();
     this.storage.delete(id);
@@ -50,18 +50,18 @@ class App {
 
   async #doInsert() {
     const input = await fs.readFile("/dev/stdin", "utf8");
-    const memo = new Memo({body: input});
+    const memo = new Memo({ body: input });
     this.storage.insert(memo);
   }
 
   async #buildChoices() {
     const memos = await this.storage.all();
-    return memos.map(({id, title}) => ({message: title, value: id}))
+    return memos.map(({ id, title }) => ({ message: title, value: id }));
   }
 }
 
 class Memo {
-  constructor({id, body}) {
+  constructor({ id, body }) {
     this.id = id;
     this.body = body;
   }
@@ -77,7 +77,8 @@ class MemoStorage {
   }
 
   createTable() {
-    const ddl = "CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL)";
+    const ddl =
+      "CREATE TABLE IF NOT EXISTS memos (id INTEGER PRIMARY KEY AUTOINCREMENT, body TEXT NOT NULL)";
     this.db.run(ddl);
   }
 
@@ -93,10 +94,10 @@ class MemoStorage {
 
   all() {
     const sql = "SELECT id, body FROM memos ORDER BY id";
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.db.all(sql, (err, rows) => {
         if (err) throw err;
-        const memos = rows.map(row => new Memo(row));
+        const memos = rows.map((row) => new Memo(row));
         resolve(memos);
       });
     });
@@ -104,7 +105,7 @@ class MemoStorage {
 
   find(id) {
     const sql = "SELECT id, body FROM memos WHERE id = ?";
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.db.get(sql, id, (err, row) => {
         if (err) throw err;
         resolve(new Memo(row));
