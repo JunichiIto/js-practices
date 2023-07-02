@@ -1,8 +1,9 @@
 import minimist from "minimist";
 
 const argv = minimist(process.argv.slice(2));
-const y = argv["y"];
-const m = argv["m"];
+const today = new Date();
+const y = argv.y ? argv.y : today.getFullYear();
+const m = argv.m ? argv.m : today.getMonth() + 1;
 
 console.log(`      ${m}月 ${y}`);
 console.log("日 月 火 水 木 金 土");
